@@ -3,7 +3,7 @@ import random
 import unittest
 import base64
 from pprint import pprint
-from bitshares.aes import AESCipher
+from gravity.aes import AESCipher
 
 
 class Testcases(unittest.TestCase):

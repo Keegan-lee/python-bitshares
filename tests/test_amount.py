@@ -1,8 +1,9 @@
 import unittest
-from bitshares import BitShares
-from bitshares.amount import Amount
-from bitshares.asset import Asset
-from bitshares.instance import set_shared_bitshares_instance, SharedInstance
+from pprint import pprint
+from gravity import Gravity
+from gravity.amount import Amount
+from gravity.asset import Asset
+from gravity.instance import set_shared_gravity_instance
 
 
 class Testcases(unittest.TestCase):
@@ -10,11 +11,10 @@ class Testcases(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.bts = BitShares(
-            "wss://node.testnet.bitshares.eu",
+        self.grv = Gravity(
             nobroadcast=True,
         )
-        set_shared_bitshares_instance(self.bts)
+        set_shared_gravity_instance(self.grv)
         self.asset = Asset("1.3.0")
         self.symbol = self.asset["symbol"]
         self.precision = self.asset["precision"]

@@ -1,12 +1,6 @@
 import unittest
-import mock
-from pprint import pprint
-from bitshares import BitShares
-from bitshares.account import Account
-from bitshares.amount import Amount
-from bitshares.asset import Asset
-from bitshares.instance import set_shared_bitshares_instance
-from bitsharesbase.operationids import getOperationNameForId
+from gravity import Gravity
+from gravity.instance import set_shared_gravity_instance
 
 wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
 
@@ -16,12 +10,19 @@ class Testcases(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.bts = BitShares(
+        self.grv = Gravity(
             nobroadcast=True,
             # We want to bundle many operations into a single transaction
             bundle=True,
             # Overwrite wallet to use this list of wifs only
-            wif=[wif]
+            wif=[wif],
+            offline=True
         )
-        self.bts.set_default_account("init0")
-        set_shared_bitshares_instance(self.bts)
+        self.grv.set_default_account("init0")
+        set_shared_gravity_instance(self.grv)
+
+    def test_get_pub_from_wif(self):
+        self.assertEqual(
+            self.grv.wallet._get_pub_from_wif(wif),
+            "ZGV6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+        )

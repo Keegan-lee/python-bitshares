@@ -1,8 +1,8 @@
 import unittest
-from bitshares import BitShares, exceptions
-from bitshares.instance import set_shared_bitshares_instance
-from bitshares.account import Account
-from bitshares.committee import Committee
+from gravity import Gravity, exceptions
+from gravity.instance import set_shared_gravity_instance
+from gravity.account import Account
+from gravity.committee import Committee
 
 
 class Testcases(unittest.TestCase):
@@ -10,10 +10,10 @@ class Testcases(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.bts = BitShares(
+        self.grv = Gravity(
             nobroadcast=True,
         )
-        set_shared_bitshares_instance(self.bts)
+        set_shared_gravity_instance(self.grv)
 
     def test_Committee(self):
         with self.assertRaises(

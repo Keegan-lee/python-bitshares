@@ -1,8 +1,8 @@
 import unittest
-from bitshares import BitShares
-from bitshares.asset import Asset
-from bitshares.instance import set_shared_bitshares_instance
-from bitshares.exceptions import AssetDoesNotExistsException
+from gravity import Gravity
+from gravity.asset import Asset
+from gravity.instance import set_shared_gravity_instance
+from gravity.exceptions import AssetDoesNotExistsException
 
 
 class Testcases(unittest.TestCase):
@@ -10,10 +10,10 @@ class Testcases(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.bts = BitShares(
+        self.grv = Gravity(
             nobroadcast=True,
         )
-        set_shared_bitshares_instance(self.bts)
+        set_shared_gravity_instance(self.grv)
 
     def test_assert(self):
         with self.assertRaises(AssetDoesNotExistsException):
@@ -37,13 +37,3 @@ class Testcases(unittest.TestCase):
         self.assertEqual(asset.permissions, asset["permissions"])
         self.assertIsInstance(asset.flags, dict)
         self.assertEqual(asset.flags, asset["flags"])
-
-    """
-    # Mocker comes from pytest-mock, providing an easy way to have patched objects
-    # for the life of the test.
-    def test_calls(mocker):
-        asset = Asset("USD", lazy=True, bitshares_instance=BitShares(offline=True))
-        method = mocker.patch.object(Asset, 'get_call_orders')
-        asset.calls
-        method.assert_called_with(10)
-    """

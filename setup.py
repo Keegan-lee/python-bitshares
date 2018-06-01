@@ -11,24 +11,25 @@ except LookupError:
     ascii = codecs.lookup('ascii')
     codecs.register(lambda name, enc=ascii: {True: enc}.get(name == 'mbcs'))
 
-VERSION = '0.1.16'
+VERSION = '0.1.31'
 
 setup(
-    name='bitshares',
+    name='gravity-protocol',
     version=VERSION,
-    description='Python library for bitshares',
+    description='Python library for the Gravity Protocol Blockchain network',
     long_description=open('README.md').read(),
-    download_url='https://github.com/xeroc/python-bitshares/tarball/' + VERSION,
-    author='Fabian Schuh',
-    author_email='Fabian@chainsquad.com',
-    maintainer='Fabian Schuh',
-    maintainer_email='Fabian@chainsquad.com',
-    url='http://www.github.com/xeroc/python-bitshares',
-    keywords=['bitshares', 'library', 'api', 'rpc'],
+    download_url='https://github.com/Keegan-lee/python-gravity/tarball/' + VERSION,
+    author='Keegan Francis',
+    author_email='keegan.lee.francis@gmail.com',
+    maintainer='Keegan Francis',
+    maintainer_email='keegan.lee.francis@gmail.com',
+    url='https://github.com/keegan-lee/gravity-python',
+    keywords=['gravity', 'library', 'api', 'rpc'],
     packages=[
-        "bitshares",
-        "bitsharesapi",
-        "bitsharesbase"
+        "gravity",
+        "gravity.cli",
+        "gravityapi",
+        "gravitybase",
     ],
     classifiers=[
         'License :: OSI Approved :: MIT License',
@@ -36,16 +37,24 @@ setup(
         'Programming Language :: Python :: 3',
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'Intended Audience :: Financial and Insurance Industry',
-        'Topic :: Office/Business :: Financial',
+        'Intended Audience :: System Administrators',
+        'Topic :: Games/Entertainment',
     ],
+    entry_points={
+        'console_scripts': [
+            'gravity = gravity.cli.cli:main',
+        ],
+    },
     install_requires=[
-        "graphenelib>=0.6.1",
-        "websockets",
+        "graphenelib>=0.6.2",
         "appdirs",
-        "Events",
+        "prettytable",
+        "events==0.3",
         "scrypt",
         "pycryptodome",  # for AES, installed through graphenelib already
+        # for the CLI tool
+        "click",
+        "treelib",
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],

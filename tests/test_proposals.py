@@ -1,8 +1,8 @@
 import unittest
 from pprint import pprint
-from bitshares import BitShares
-from bitsharesbase.operationids import getOperationNameForId
-from bitshares.instance import set_shared_bitshares_instance
+from gravity import Gravity
+from gravitybase.operationids import getOperationNameForId
+from gravity.instance import set_shared_gravity_instance
 
 wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
 
@@ -12,22 +12,21 @@ class Testcases(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.bts = BitShares(
-            "wss://node.testnet.bitshares.eu",
+        self.grv = Gravity(
             nobroadcast=True,
-            keys={"active": wif},
+            wif=[wif]
         )
         # from getpass import getpass
-        # self.bts.wallet.unlock(getpass())
-        set_shared_bitshares_instance(self.bts)
-        self.bts.set_default_account("init0")
+        # self.grv.wallet.unlock(getpass())
+        set_shared_gravity_instance(self.grv)
+        self.grv.set_default_account("init0")
 
     def test_finalizeOps_proposal(self):
-        bts = self.bts
-        # proposal = bts.new_proposal(bts.tx())
-        proposal = bts.proposal()
-        self.bts.transfer("init1", 1, "TEST", append_to=proposal)
-        tx = bts.tx().json()  # default tx buffer
+        grv = self.grv
+        # proposal = grv.new_proposal(grv.tx())
+        proposal = grv.proposal()
+        self.grv.transfer("init1", 1, "ZGV", append_to=proposal)
+        tx = grv.tx().json()  # default tx buffer
         ops = tx["operations"]
         self.assertEqual(len(ops), 1)
         self.assertEqual(
@@ -40,11 +39,11 @@ class Testcases(unittest.TestCase):
             "transfer")
 
     def test_finalizeOps_proposal2(self):
-        bts = self.bts
-        proposal = bts.new_proposal()
-        # proposal = bts.proposal()
-        self.bts.transfer("init1", 1, "TEST", append_to=proposal)
-        tx = bts.tx().json()  # default tx buffer
+        grv = self.grv
+        proposal = grv.new_proposal()
+        # proposal = grv.proposal()
+        self.grv.transfer("init1", 1, "ZGV", append_to=proposal)
+        tx = grv.tx().json()  # default tx buffer
         ops = tx["operations"]
         self.assertEqual(len(ops), 1)
         self.assertEqual(
@@ -57,11 +56,11 @@ class Testcases(unittest.TestCase):
             "transfer")
 
     def test_finalizeOps_combined_proposal(self):
-        bts = self.bts
-        parent = bts.new_tx()
-        proposal = bts.new_proposal(parent)
-        self.bts.transfer("init1", 1, "TEST", append_to=proposal)
-        self.bts.transfer("init1", 1, "TEST", append_to=parent)
+        grv = self.grv
+        parent = grv.new_tx()
+        proposal = grv.new_proposal(parent)
+        self.grv.transfer("init1", 1, "ZGV", append_to=proposal)
+        self.grv.transfer("init1", 1, "ZGV", append_to=parent)
         tx = parent.json()
         ops = tx["operations"]
         self.assertEqual(len(ops), 2)
@@ -78,10 +77,10 @@ class Testcases(unittest.TestCase):
             "transfer")
 
     def test_finalizeOps_changeproposer_new(self):
-        bts = self.bts
-        proposal = bts.proposal(proposer="init5")
-        bts.transfer("init1", 1, "TEST", append_to=proposal)
-        tx = bts.tx().json()
+        grv = self.grv
+        proposal = grv.proposal(proposer="init5")
+        grv.transfer("init1", 1, "ZGV", append_to=proposal)
+        tx = grv.tx().json()
         ops = tx["operations"]
         self.assertEqual(len(ops), 1)
         self.assertEqual(
@@ -89,16 +88,15 @@ class Testcases(unittest.TestCase):
             "proposal_create")
         prop = ops[0][1]
         self.assertEqual(len(prop["proposed_ops"]), 1)
-        self.assertEqual(prop["fee_paying_account"], "1.2.11")
+        self.assertEqual(prop["fee_paying_account"], "1.2.12")
         self.assertEqual(
             getOperationNameForId(prop["proposed_ops"][0]["op"][0]),
             "transfer")
 
-    """
     def test_finalizeOps_changeproposer_legacy(self):
-        bts = self.bts
-        bts.proposer = "init5"
-        tx = bts.transfer("init1", 1, "TEST")
+        grv = self.grv
+        grv.proposer = "init5"
+        tx = grv.transfer("init1", 1, "ZGV")
         ops = tx["operations"]
         self.assertEqual(len(ops), 1)
         self.assertEqual(
@@ -106,20 +104,19 @@ class Testcases(unittest.TestCase):
             "proposal_create")
         prop = ops[0][1]
         self.assertEqual(len(prop["proposed_ops"]), 1)
-        self.assertEqual(prop["fee_paying_account"], "1.2.11")
+        self.assertEqual(prop["fee_paying_account"], "1.2.12")
         self.assertEqual(
             getOperationNameForId(prop["proposed_ops"][0]["op"][0]),
             "transfer")
-    """
 
     def test_new_proposals(self):
-        bts = self.bts
-        p1 = bts.new_proposal()
-        p2 = bts.new_proposal()
+        grv = self.grv
+        p1 = grv.new_proposal()
+        p2 = grv.new_proposal()
         self.assertIsNotNone(id(p1), id(p2))
 
     def test_new_txs(self):
-        bts = self.bts
-        p1 = bts.new_tx()
-        p2 = bts.new_tx()
+        grv = self.grv
+        p1 = grv.new_tx()
+        p2 = grv.new_tx()
         self.assertIsNotNone(id(p1), id(p2))

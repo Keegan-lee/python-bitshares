@@ -3,10 +3,8 @@
 clean: clean-build clean-pyc
 
 clean-build:
-	rm -fr build/
-	rm -fr dist/
-	rm -fr *.egg-info
-	rm -fr __pycache__/ .eggs/ .cache/ .tox/
+	rm -fr build/ dist/ *.egg-info .eggs/ .tox/ __pycache__/ .cache/ .coverage htmlcov src
+	rm -rf contrib/tmp/piston/
 
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -14,7 +12,7 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 lint:
-	flake8 --ignore=E501,F401 bitsharesapi bitsharesbase examples
+	flake8 gravity*/
 
 test:
 	python3 setup.py test
@@ -40,7 +38,7 @@ dist:
 	python3 setup.py bdist_wheel upload
 
 docs:
-	sphinx-apidoc -d 6 -e -f -o docs . *.py tests
+	sphinx-apidoc -d 6 -e -f -o docs gravity*
 	make -C docs clean html
 
 release: clean check dist git

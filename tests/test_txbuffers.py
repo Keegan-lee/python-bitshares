@@ -1,7 +1,8 @@
 import unittest
-from bitshares import BitShares
-from bitsharesbase import operations
-from bitshares.instance import set_shared_bitshares_instance
+from pprint import pprint
+from gravity import Gravity
+from gravitybase import transactions, operations
+from gravity.instance import set_shared_gravity_instance
 
 wif = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
 
@@ -11,24 +12,25 @@ class Testcases(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.bts = BitShares(
-            "wss://node.testnet.bitshares.eu",
+        self.grv = Gravity(
             nobroadcast=True,
-            keys={"active": wif}
-        )
-        set_shared_bitshares_instance(self.bts)
-        self.bts.set_default_account("init0")
+            wif={
+                # Force signing with this key
+                "active": wif
+            })
+        set_shared_gravity_instance(self.grv)
+        self.grv.set_default_account("init0")
 
     def test_add_one_proposal_one_op(self):
-        bts = self.bts
-        tx1 = bts.new_tx()
-        proposal1 = bts.new_proposal(tx1, proposer="init0")
+        grv = self.grv
+        tx1 = grv.new_tx()
+        proposal1 = grv.new_proposal(tx1, proposer="init0")
         op = operations.Transfer(**{
             "fee": {"amount": 0, "asset_id": "1.3.0"},
             "from": "1.2.0",
             "to": "1.2.0",
             "amount": {"amount": 0, "asset_id": "1.3.0"},
-            "prefix": "TEST"
+            "prefix": "ZGV"
         })
         proposal1.appendOps(op)
         tx = tx1.json()
@@ -39,15 +41,15 @@ class Testcases(unittest.TestCase):
         self.assertEqual(ps["proposed_ops"][0]["op"][0], 0)
 
     def test_add_one_proposal_two_ops(self):
-        bts = self.bts
-        tx1 = bts.new_tx()
-        proposal1 = bts.new_proposal(tx1, proposer="init0")
+        grv = self.grv
+        tx1 = grv.new_tx()
+        proposal1 = grv.new_proposal(tx1, proposer="init0")
         op = operations.Transfer(**{
             "fee": {"amount": 0, "asset_id": "1.3.0"},
             "from": "1.2.0",
             "to": "1.2.0",
             "amount": {"amount": 0, "asset_id": "1.3.0"},
-            "prefix": "TEST"
+            "prefix": "ZGV"
         })
         proposal1.appendOps(op)
         proposal1.appendOps(op)
@@ -60,29 +62,29 @@ class Testcases(unittest.TestCase):
         self.assertEqual(ps["proposed_ops"][1]["op"][0], 0)
 
     def test_have_two_proposals(self):
-        bts = self.bts
-        tx1 = bts.new_tx()
+        grv = self.grv
+        tx1 = grv.new_tx()
 
         # Proposal 1
-        proposal1 = bts.new_proposal(tx1, proposer="init0")
+        proposal1 = grv.new_proposal(tx1, proposer="init0")
         op = operations.Transfer(**{
             "fee": {"amount": 0, "asset_id": "1.3.0"},
             "from": "1.2.0",
             "to": "1.2.0",
             "amount": {"amount": 0, "asset_id": "1.3.0"},
-            "prefix": "TEST"
+            "prefix": "ZGV"
         })
         for i in range(0, 3):
             proposal1.appendOps(op)
 
         # Proposal 1
-        proposal2 = bts.new_proposal(tx1, proposer="init0")
+        proposal2 = grv.new_proposal(tx1, proposer="init0")
         op = operations.Transfer(**{
             "fee": {"amount": 0, "asset_id": "1.3.0"},
             "from": "1.2.0",
             "to": "1.2.0",
             "amount": {"amount": 5555555, "asset_id": "1.3.0"},
-            "prefix": "TEST"
+            "prefix": "ZGV"
         })
         for i in range(0, 2):
             proposal2.appendOps(op)
